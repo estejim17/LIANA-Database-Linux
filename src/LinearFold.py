@@ -149,7 +149,7 @@ for j in listmiRNA:
                         driver.find_element_by_id("seqInput").send_keys(cadenas[i])
                         time.sleep(2)
                         driver.find_element_by_xpath("/html/body/fieldset[1]/form/input[1]").click()
-
+                        break
                 except:
                     fecha = str(datetime.datetime.now())
                     print("Page refreshed at time: " + fecha + " because it didn't load properly")
