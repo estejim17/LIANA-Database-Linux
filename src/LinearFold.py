@@ -146,7 +146,7 @@ for j in listmiRNA:
                     )
                     driver.find_element_by_id("seqInput").send_keys(Keys.CONTROL, 'a')
                     if cadenas[i] != 'ERROR':
-			 driver.find_element_by_id("seqInput").send_keys(cadenas[i])
+			driver.find_element_by_id("seqInput").send_keys(cadenas[i])
                     	time.sleep(2)
                     	driver.find_element_by_xpath("/html/body/fieldset[1]/form/input[1]").click()
                     
