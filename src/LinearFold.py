@@ -50,7 +50,7 @@ def exit_handler():
     df1 = pd.concat([df1,df2,df3], ignore_index=True, axis=1)
     df1.columns = ['lncRNA','Cadena','CONTRA-FOLD','C-Energía','VIENNA','V-Energía',
                 'query','ref','chromosome','m_start','m_end','energy','score','conserve']        
-    df1.to_excel(writer, j)
+    df1.to_csv(writer, j)
     writer.save()
 atexit.register(exit_handler)
 
@@ -64,8 +64,8 @@ def dataRead(sheet1):
     #se leen los archivos excel para extraer los datos necesarios.
     #se necesitan: las cadenas para buscar en linearfold, los demas datos ya extraidos
     #de linearfold para continuar con la extraccion
-    output = pd.read_excel('/home/estejim15/LIANA-Database-Linux/database/output.xlsx', sheet1)
-    df1 = pd.read_excel('/home/estejim15/LIANA-Database-Linux/database/Datos1.xlsx', sheet1)
+    output = pd.read_csv('/home/estejim15/LIANA-Database-Linux/database/output.csv', sheet1)
+    df1 = pd.read_csv('/home/estejim15/LIANA-Database-Linux/database/Datos1.csv', sheet1)
     cadenas = df1.values[:,1].tolist()
     if len(output['CONTRA-FOLD'].dropna()) == 0:
         inicio = 0
@@ -123,16 +123,16 @@ for j in listmiRNA:
     
         #se borran los worksheets en los que se esta trabajando
         #para luego crear un duplicado y evitar que hayan dos iguales
-        wb = load_workbook('/home/estejim15/LIANA-Database-Linux/database/output.xlsx') 
+        wb = load_workbook('/home/estejim15/LIANA-Database-Linux/database/output.csv') 
         wb.remove(wb[j])
-        wb.save('/home/estejim15/LIANA-Database-Linux/database/output.xlsx')
+        wb.save('/home/estejim15/LIANA-Database-Linux/database/output.csv')
     
         #se crea instancia de ExcelWriter para leer el excel 
         options = {}
         options['strings_to_formulas'] = False
         options['strings_to_urls'] = False
         #pylint: disable=abstract-class-instantiated
-        writer = pd.ExcelWriter('/home/estejim15/LIANA-Database-Linux/database/output.xlsx', mode='a', engine='openpyxl')
+        writer = pd.ExcelWriter('/home/estejim15/LIANA-Database-Linux/database/output.csv', mode='a', engine='openpyxl')
         for i in range(inicio, len(cadenas)): 
 
             #se accede al sitio web con selenium y se sigue el workflow necesario
@@ -198,5 +198,5 @@ for j in listmiRNA:
         df1 = pd.concat([df1,df2,df3], ignore_index=True, axis=1)
         df1.columns = ['lncRNA','Cadena','CONTRA-FOLD','C-Energía','VIENNA','V-Energía',
                         'query','ref','chromosome','m_start','m_end','energy','score','conserve']
-        df1.to_excel(writer, j)
+        df1.to_csv(writer, j)
         writer.save()
