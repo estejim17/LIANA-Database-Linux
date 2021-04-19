@@ -149,6 +149,7 @@ for j in listmiRNA:
                         driver.find_element_by_id("seqInput").send_keys(cadenas[i])
                         time.sleep(2)
                         driver.find_element_by_xpath("/html/body/fieldset[1]/form/input[1]").click()
+                    else:
                         break
                 except:
                     fecha = str(datetime.datetime.now())
