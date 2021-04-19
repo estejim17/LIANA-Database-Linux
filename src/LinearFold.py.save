@@ -145,12 +145,11 @@ for j in listmiRNA:
                         EC.presence_of_element_located((By.ID,'seqInput' ))
                     )
                     driver.find_element_by_id("seqInput").send_keys(Keys.CONTROL, 'a')
-                    if cadenas[i] != 'ERROR':
-			 driver.find_element_by_id("seqInput").send_keys(cadenas[i])
-                    	time.sleep(2)
-                    	driver.find_element_by_xpath("/html/body/fieldset[1]/form/input[1]").click()
+                    driver.find_element_by_id("seqInput").send_keys(cadenas[i])
+                    time.sleep(2)
+                    driver.find_element_by_xpath("/html/body/fieldset[1]/form/input[1]").click()
                     
-                except:
+                except Excepti
                     fecha = str(datetime.datetime.now())
                     print("Page refreshed at time: " + fecha + " because it didn't load properly")
                     time.sleep(1)
@@ -172,10 +171,10 @@ for j in listmiRNA:
                     
             except:
                 print('Fallo en cargar datos.')
-                linearfoldC.append('ERROR')
-                energia.append('ERROR')
-                linearfoldV.append('ERROR')
-                energiaV.append('ERROR')
+                linearfoldC.append('Error')
+                energia.append('Error')
+                linearfoldV.append('Error')
+                energiaV.append('Error')
 
         #se crean distintos dataframes para unir todos los datos al final de la extraccion
         #luego se escriben en el excel y se guarda
