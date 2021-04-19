@@ -27,7 +27,7 @@ def checkChromeVersion():
     ## Se debe encontrar la version actual de chrome
     
 
-    driver = webdriver.Chrome(executable_path=r'./chromedriver/chromedriver.exe')
+    driver = webdriver.Chrome()
     driver.minimize_window()
     versionBrowser = driver.capabilities['browserVersion']
     versionDriver = driver.capabilities['chrome']['chromedriverVersion'].split(' ')[0]

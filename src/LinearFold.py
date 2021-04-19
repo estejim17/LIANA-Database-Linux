@@ -55,7 +55,6 @@ def exit_handler():
 atexit.register(exit_handler)
 
 #se checkea la version de chrome y si es necesario descarga el driver para selenium
-CheckVersion.checkChromeVersion() 
 
 #se extraen miRNA usando la funcion de ExtractmirRNA.py
 listmiRNA = ExtractmirRNA.getmiRNA()
@@ -65,8 +64,8 @@ def dataRead(sheet1):
     #se leen los archivos excel para extraer los datos necesarios.
     #se necesitan: las cadenas para buscar en linearfold, los demas datos ya extraidos
     #de linearfold para continuar con la extraccion
-    output = pd.read_excel('./database/output.xlsx', sheet1)
-    df1 = pd.read_excel('./database/Datos1.xlsx', sheet1)
+    output = pd.read_excel('/home/estejim15/LIANA-Database-Linux/database/output.xlsx', sheet1)
+    df1 = pd.read_excel('/home/estejim15/LIANA-Database-Linux/database/Datos1.xlsx', sheet1)
     cadenas = df1.values[:,1].tolist()
     if len(output['CONTRA-FOLD'].dropna()) == 0:
         inicio = 0
@@ -90,9 +89,8 @@ linkSel = 'http://linearfold.org/'
 
 
 #se crea instancia de selenium
-caps = DesiredCapabilities().CHROME
-caps["pageLoadStrategy"] = "eager"  #  para que no espere a que se cargue la pagina
-driver = webdriver.Chrome(executable_path=r'./chromedriver/chromedriver',  desired_capabilities=caps)
+
+driver = webdriver.Chrome()
 action = ActionChains(driver)
 
 def APIaccess(linkAPI, idCadena):
@@ -125,16 +123,16 @@ for j in listmiRNA:
     
         #se borran los worksheets en los que se esta trabajando
         #para luego crear un duplicado y evitar que hayan dos iguales
-        wb = load_workbook('./database/output.xlsx') 
+        wb = load_workbook('/home/estejim15/LIANA-Database-Linux/database/output.xlsx') 
         wb.remove(wb[j])
-        wb.save('./database/output.xlsx')
+        wb.save('/home/estejim15/LIANA-Database-Linux/database/output.xlsx')
     
         #se crea instancia de ExcelWriter para leer el excel 
         options = {}
         options['strings_to_formulas'] = False
         options['strings_to_urls'] = False
         #pylint: disable=abstract-class-instantiated
-        writer = pd.ExcelWriter('./database/output.xlsx', mode='a', engine='openpyxl')
+        writer = pd.ExcelWriter('/home/estejim15/LIANA-Database-Linux/database/output.xlsx', mode='a', engine='openpyxl')
         for i in range(inicio, len(cadenas)): 
 
             #se accede al sitio web con selenium y se sigue el workflow necesario
