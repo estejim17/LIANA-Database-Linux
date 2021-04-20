@@ -60,12 +60,13 @@ def dataRead(sheet1):
 link = "http://bioinfo.life.hust.edu.cn/static/lncRNASNP2/download_sequence/lncrna/{}"
 
 
-
+counter = 1
 for j in listmiRNA:
     listRNA, lista2, inicio = dataRead(j)
     
     cadenas = lista2
-    print(j)  
+    print(str(counter) + "- "+ j) 
+    counter += 1 
 
     if inicio != len(listRNA): 
     
