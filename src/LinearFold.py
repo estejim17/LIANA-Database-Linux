@@ -104,13 +104,14 @@ def APIaccess(linkAPI, idCadena):
     r = r.json()
     return r
     
-
+counter = 1
 for j in listmiRNA:
     #se recorren todos los miRNA (cada worksheet de excel es uno)
     output, listRNA, cadenas, inicio, linearfoldC, energia, linearfoldV, linearfoldV, energiaV = dataRead(j)
     
 
-    print(j)  
+    print(str(counter) + "- "+ j)  
+    counter += 1
 
 
 
