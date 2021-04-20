@@ -1,5 +1,3 @@
-#!/usr/bin/python
-# coding=utf-8
 
 #importacion de selenium y modulos relacionados
 import time

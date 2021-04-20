@@ -19,8 +19,6 @@ from pandas import ExcelWriter
 from pandas import ExcelFile
 import os
 import sys
-#!/usr/bin/python
-# coding=utf-8
 import time
 from openpyxl import load_workbook
 
