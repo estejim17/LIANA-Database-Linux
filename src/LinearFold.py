@@ -23,7 +23,6 @@ import time
 from openpyxl import load_workbook
 
 import ExtractmirRNA
-import CheckVersion
 
 import atexit
 
