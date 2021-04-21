@@ -54,7 +54,10 @@ atexit.register(exit_handler)
 #se checkea la version de chrome y si es necesario descarga el driver para selenium
 
 #se extraen miRNA usando la funcion de ExtractmirRNA.py
-listmiRNA = ExtractmirRNA.getmiRNA()
+
+worksheets = pd.ExcelFile('/home/estejim15/LIANA-Database-Linux/database/output.xlsx')
+listmiRNA = worksheets.sheet_names
+#listmiRNA = ExtractmirRNA.getmiRNA()
 
 
 def dataRead(sheet1):
