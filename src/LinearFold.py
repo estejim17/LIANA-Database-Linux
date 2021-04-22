@@ -57,6 +57,7 @@ atexit.register(exit_handler)
 
 worksheets = pd.ExcelFile('/home/estejim15/LIANA-Database-Linux/database/output.xlsx')
 listmiRNA = worksheets.sheet_names
+listmiRNA.insert(0,listmiRNA.pop())
 #listmiRNA = ExtractmirRNA.getmiRNA()
 
 
