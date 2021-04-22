@@ -55,10 +55,10 @@ atexit.register(exit_handler)
 
 #se extraen miRNA usando la funcion de ExtractmirRNA.py
 
-worksheets = pd.ExcelFile('/home/estejim15/LIANA-Database-Linux/database/output.xlsx')
-listmiRNA = worksheets.sheet_names
-listmiRNA.insert(0,listmiRNA.pop())
-#listmiRNA = ExtractmirRNA.getmiRNA()
+# worksheets = pd.ExcelFile('/home/estejim15/LIANA-Database-Linux/database/output.xlsx')
+# listmiRNA = worksheets.sheet_names
+# listmiRNA.insert(0,listmiRNA.pop())
+listmiRNA = ExtractmirRNA.getmiRNA()
 
 
 def dataRead(sheet1):
