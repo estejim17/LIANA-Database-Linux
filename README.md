@@ -36,12 +36,13 @@ sudo apt-get install -f
 
 ```
 
-2. Luego, se instala el Chromedriver:
+2. Luego, se instala el Chromedriver (**NOTA: en el link del codigo siguiente, reemplazar el XX.X.XXXX.XX por la versión actual del chrome driver.
+Esto se puede ver aqui:** https://chromedriver.chromium.org/home):
 
 ```
 sudo apt-get install unzip
 
-wget -N http://chromedriver.storage.googleapis.com/2.26/chromedriver_linux64.zip
+wget -N https://chromedriver.storage.googleapis.com/XX.X.XXXX.XX/chromedriver_linux64.zip
 unzip chromedriver_linux64.zip
 chmod +x chromedriver
 
@@ -50,6 +51,8 @@ sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
 sudo ln -s /usr/local/share/chromedriver /usr/bin/chromedriver
 
 ```
+
+
 >Obtenido de: https://christopher.su/2015/selenium-chromedriver-ubuntu/
 ---------------------------------------------------------------------------------------------------------------------------
 
