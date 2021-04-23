@@ -36,8 +36,7 @@ sudo apt-get install -f
 
 ```
 
-2. Luego, se instala el Chromedriver (**NOTA: en el link del codigo siguiente, reemplazar el XX.X.XXXX.XX por la versión actual del chrome driver.
-Esto se puede ver aqui:** https://chromedriver.chromium.org/home):
+2. Luego, se instala el Chromedriver (**NOTA: en el link del codigo siguiente, reemplazar el XX.X.XXXX.XX por la versión del chromedriver correspondiente a la versión actual de Google Chrome. Esto se puede ver aqui:** https://chromedriver.chromium.org/home):
 
 ```
 sudo apt-get install unzip
