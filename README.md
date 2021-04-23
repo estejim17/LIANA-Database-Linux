@@ -1,4 +1,4 @@
-# LIANA-Database
+# LIANA-Database-Linux
 Utilizado para automatizar el proceso de recolección de datos para el proyecto del LIANA que involucra compensación genética en cáncer aneuploide.
 
 Para utilizarlo:
@@ -23,8 +23,37 @@ Ejemplo:
 pip install selenium
 ```
 
-NOTA: Selenium necesita un chromedriver. Este ya viene instalado en el repertorio. Si se tiene una versión distinta, al ejecutar LinearFold.py se notificará y preguntará si se desea hacer la actualización.
+NOTA: Selenium necesita un chromedriver. Para instalar en Linux:
 
+1. Primero es necesario instalar Google Chrome:
+
+```
+sudo apt-get install libxss1 libappindicator1 libindicator7
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+
+sudo dpkg -i google-chrome*.deb
+sudo apt-get install -f
+
+```
+
+2. Luego, se instala el Chromedriver (**NOTA: en el link del codigo siguiente, reemplazar el XX.X.XXXX.XX por la versión actual del chrome driver.
+Esto se puede ver aqui:** https://chromedriver.chromium.org/home):
+
+```
+sudo apt-get install unzip
+
+wget -N https://chromedriver.storage.googleapis.com/XX.X.XXXX.XX/chromedriver_linux64.zip
+unzip chromedriver_linux64.zip
+chmod +x chromedriver
+
+sudo mv -f chromedriver /usr/local/share/chromedriver
+sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
+sudo ln -s /usr/local/share/chromedriver /usr/bin/chromedriver
+
+```
+
+
+>Obtenido de: https://christopher.su/2015/selenium-chromedriver-ubuntu/
 ---------------------------------------------------------------------------------------------------------------------------
 
 ACTUALIZACIÓN 4/10/2021:
