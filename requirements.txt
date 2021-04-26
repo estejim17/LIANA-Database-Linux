@@ -6,4 +6,4 @@ datetime
 progressbar
 wget
 numpy
-xlrd == 1.2.0
+xlrd
