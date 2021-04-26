@@ -16,7 +16,7 @@ Bibliotecas necesarias:
 
 Para instalar las bibliotecas:
 
-***Opción 1: ***
+**Opción 1:**
 Instalar bibliotecas necesarias por medio del comando:
 
 
@@ -24,7 +24,7 @@ Instalar bibliotecas necesarias por medio del comando:
 pip install -r requirements.txt
 ```
 
-***Opción 2: ***
+**Opción 2:**
 Abrir CMD o cualquier terminal y escribir "pip install xxxxxx" para cada biblioteca necesaria.
 
 Ejemplo: 
