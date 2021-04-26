@@ -1,0 +1,9 @@
+pandas
+selenium
+requests
+openpyxl
+datetime
+progressbar
+wget
+numpy
+xlrd == 1.2.0
