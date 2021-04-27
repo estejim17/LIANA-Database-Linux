@@ -65,8 +65,8 @@ def dataRead(sheet1):
     #se leen los archivos excel para extraer los datos necesarios.
     #se necesitan: las cadenas para buscar en linearfold, los demas datos ya extraidos
     #de linearfold para continuar con la extraccion
-    output = pd.read_excel('/home/estejim15/LIANA-Database-Linux/database/output.xlsx', sheet1)
-    df1 = pd.read_excel('/home/estejim15/LIANA-Database-Linux/database/Datos1.xlsx', sheet1)
+    output = pd.read_excel('/home/estejim15/LIANA-Database-Linux/database/output.xlsx', sheet1, engine='openpyxl')
+    df1 = pd.read_excel('/home/estejim15/LIANA-Database-Linux/database/Datos1.xlsx', sheet1, engine='openpyxl')
     cadenas = df1.values[:,1].tolist()
     if len(output['CONTRA-FOLD'].dropna()) == 0:
         inicio = 0
