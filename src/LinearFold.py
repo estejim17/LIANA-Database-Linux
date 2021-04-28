@@ -43,7 +43,7 @@ def exit_handler():
     df3['m_end'] = output['m_end']
     df3['energy'] = output['energy']
     df3['score'] = output['score']
-    df3['conserve'] = output['conserve']*1
+    df3['conserve'] = output['conserve']
     df1 = pd.concat([df1,df2,df3], ignore_index=True, axis=1)
     df1.columns = ['lncRNA','Cadena','CONTRA-FOLD','C-Energía','VIENNA','V-Energía',
                 'query','ref','chromosome','m_start','m_end','energy','score','conserve']        
@@ -198,7 +198,7 @@ for j in listmiRNA:
         df3['m_end'] = output['m_end']
         df3['energy'] = output['energy']
         df3['score'] = output['score']
-        df3['conserve'] = output['conserve']*1
+        df3['conserve'] = output['conserve']
         df1 = pd.concat([df1,df2,df3], ignore_index=True, axis=1)
         df1.columns = ['lncRNA','Cadena','CONTRA-FOLD','C-Energía','VIENNA','V-Energía',
                         'query','ref','chromosome','m_start','m_end','energy','score','conserve']
