@@ -86,4 +86,4 @@ def fillDB():
     writer.save() #guarda el archivo excel, cada miRNA se guarda en una hoja de excel distinta
 
 
-fillDB()
+#fillDB()
