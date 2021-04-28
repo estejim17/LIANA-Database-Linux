@@ -77,7 +77,7 @@ def fillDB():
 
         #reorganiza las columnas en el orden adecuado
         df = df[['lncRNA', 'Cadena', 'CONTRA-FOLD','C-Energía','VIENNA','V-Energía', 'query','ref','chromosome',"m_start", "m_end","energy","score","conserve"]]
-
+        df['conserve'] = df['conserve']*1
         df.to_excel(writer, i)
         count = count + 1
         bar.update(count)
@@ -86,4 +86,4 @@ def fillDB():
     writer.save() #guarda el archivo excel, cada miRNA se guarda en una hoja de excel distinta
 
 
-
+fillDB()
