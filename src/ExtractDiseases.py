@@ -12,29 +12,36 @@ from pandas import ExcelWriter
 from pandas import ExcelFile
 import os
 import sys
+from openpyxl import load_workbook
+
+import ExtractmirRNA
+import atexit
+
+def exit_handler():
+    output['cancer related'] = disCol
+    output.to_excel(writer, sheet)
+    writer.save()
+atexit.register(exit_handler)
+
+listmiRNA = ExtractmirRNA.getmiRNA()
+
+def dataRead(sheet1):
+    #se leen los archivos excel para extraer los datos necesarios.
+    output = pd.read_excel('/home/estejim15/LIANA-Database-Linux/database/output.xlsx', sheet1, engine='openpyxl')   
+
+    listINC = output['lncRNA'].tolist()
+    return output, listINC
 
 
-def dataRead():
-    df = pd.read_excel('../database/output.xlsx', sheet_name='hsa-let-7a-5p')
-    df1 = pd.read_excel('../database/Datos1.xlsx')
-    if df1.empty:
-        inicio = 0
-        lista2 = []
-    else:
-        lista2 = df1.values[:,1].tolist()
-        inicio = len(lista2)
-        
-    listRNA = df.values[:,1]    
-    return listRNA, lista2, inicio
 
-listRNA, lista2, inicio = dataRead()
-cadenas = lista2
+
 # print(listRNA)
 
-df1 = pd.read_excel('../database/Datos1.xlsx')
 
 
 disease_list_url = "http://bioinfo.life.hust.edu.cn/lncRNASNP/api/exp_disease_list?index={}&page={}"
+
+
 
 incRNA = []
 diseases = []
@@ -58,11 +65,16 @@ for key in (indexes.keys()):
     for i in range(1,indexes[key]+1):
         response = requests.get(disease_list_url.format(key, i)).json()
         df = pd.DataFrame(response["lncrna_gene_list"])
+        for idx, value in enumerate(df['disease'].tolist()):
+            disease = value.lower()
+            if 'leukemia' in disease or 'cancer' in disease or 'carcinoma' in disease or 'lymphoma' in disease or 'melanoma' in disease or 'medulloblastoma' in disease or 'neuroblastoma' in disease or 'osteosarcoma' in disease or 'rhabdomyosarcoma' in disease or 'tumor' in disease or 'meningioma' in disease :
+                incRNA.append(df['lncrna'].tolist()[idx])
+                diseases.append(disease)
         # print(df)
-        incRNA.extend(df['lncrna'].tolist())
-        diseases.extend(df['disease'].tolist())
-        chrom.extend(df['chromosome'].tolist())
-        pubMed.extend(df['pubmed'].tolist())
+        # incRNA.extend(df['lncrna'].tolist())
+        # diseases.extend(df['disease'].tolist())
+        # chrom.extend(df['chromosome'].tolist())
+        # pubMed.extend(df['pubmed'].tolist())
         # print(incRNA)
         # print(diseases)
         # print(chrom)
@@ -71,25 +83,52 @@ for key in (indexes.keys()):
         bar.update(count)
 bar.finish()
 print('              ---------------------LISTO---------------------')
-indices = []
-indices2 = []
 
-excel1 = ['-']*len(listRNA)
-excel2 = ['-']*len(listRNA)
-excel3 = ['-']*len(listRNA)
-excel4 = ['-']*len(listRNA)
 
-for j in range(len(listRNA)):
-    for i in range(len(incRNA)):
-        if incRNA[i] == listRNA[j]:
-            excel1[j] = incRNA[i]
-            excel2[j] = diseases[i]
-            excel3[j] = chrom[i]
-            excel4[j] = pubMed[i]
-            indices.append(j)
-            indices2.append(i)
+counter = 1
+for sheet in listmiRNA:
 
-df = pd.DataFrame.from_dict({'incRNA':excel1,'Diseases':excel2, 'Chromosome':excel3, 'pubMed':excel4})
-df.to_excel('../database/Diseases.xlsx', header=True, index=False)
+    
+    print(str(counter) + "- "+ sheet)  
+    counter += 1
+    output, listINC = dataRead(sheet)
+
+    wb = load_workbook('/home/estejim15/LIANA-Database-Linux/database/output.xlsx') 
+    wb.remove(wb[sheet])
+    wb.save('/home/estejim15/LIANA-Database-Linux/database/output.xlsx')
+
+    disCol = [0]*len(listINC)
+    writer = pd.ExcelWriter('/home/estejim15/LIANA-Database-Linux/database/output.xlsx', mode='a', engine='openpyxl')
+    for i in range(len(listINC)):
+        print('Comparando incRNA {}'.format(i))
+        for j in range(len(incRNA)):
+            if j == i:
+                disCol[i] = 1
+        
+    output['cancer related'] = disCol
+    output.to_excel(writer, sheet)
+    writer.save()
+print(incRNA)
+print(diseases)
+# indices = []
+# indices2 = []
+
+# excel1 = ['-']*len(listRNA)
+# excel2 = ['-']*len(listRNA)
+# excel3 = ['-']*len(listRNA)
+# excel4 = ['-']*len(listRNA)
+
+# for j in range(len(listRNA)):
+#     for i in range(len(incRNA)):
+#         if incRNA[i] == listRNA[j]:
+#             excel1[j] = incRNA[i]
+#             excel2[j] = diseases[i]
+#             # excel3[j] = chrom[i]
+#             # excel4[j] = pubMed[i]
+#             indices.append(j)
+#             indices2.append(i)
+
+# df = pd.DataFrame.from_dict({'incRNA':excel1,'Diseases':excel2})
+# df.to_excel('../database/Diseases.xlsx', header=True, index=False)
 
 
