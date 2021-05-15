@@ -47,8 +47,6 @@ incRNA = []
 diseases = []
 pubMed = []
 chrom = []
-print()
-# sys.stdout.write("Obteniendo información de sitio web...")
 print('Obteniendo información de sitio web...')
 
 
@@ -102,7 +100,7 @@ for sheet in listmiRNA:
     for i in range(len(listINC)):
         print('Comparando incRNA {}'.format(i))
         for j in range(len(incRNA)):
-            if j == i:
+            if incRNA[j] == listINC[i]:
                 disCol[i] = 1
         
     output['cancer related'] = disCol
