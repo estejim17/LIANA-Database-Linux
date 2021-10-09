@@ -27,30 +27,16 @@ import ExtractmirRNA
 
 import atexit
 
-# def exit_handler():
-#     df1 = pd.DataFrame()
-#     df2 = pd.DataFrame()
-#     df3 = pd.DataFrame()
-#     df1['lncRNA'] = output['lncRNA']
-#     df1['Cadenas'] = cadenas
-#     df2['CONTRA-FOLD'] = linearfoldC
-#     df2['C-Enegía'] = energia
-#     df2['VIENNA'] = linearfoldV
-#     df2['V-Energía'] = energiaV
-#     df3['query'] = output['query']
-#     df3['ref'] = output['ref']
-#     df3['chromosome'] = output['chromosome']
-#     df3['m_start'] = output['m_start']
-#     df3['m_end'] = output['m_end']
-#     df3['energy'] = output['energy']
-#     df3['score'] = output['score']
-#     df3['conserve'] = output['conserve']
-#     df1 = pd.concat([df1,df2,df3], ignore_index=True, axis=1)
-#     df1.columns = ['lncRNA','Cadena','CONTRA-FOLD','C-Energía','VIENNA','V-Energía',
-#                 'query','ref','chromosome','m_start','m_end','energy','score','conserve']        
-#     df1.to_excel(writer, j)
-#     writer.save()
-# atexit.register(exit_handler)
+def exit_handler():
+    df1 = output
+    df1['Energy Tot'] = energies
+    df1['Index Match'] = matches
+    df1.columns = ['lncRNA','Cadena','CONTRA-FOLD','C-Energía','VIENNA','V-Energía',
+                    'query','ref','chromosome','m_start','m_end','energy','score','conserve', 'cancer related', 'Energy Tot', 'Index Match']
+
+    df1.to_excel(writer, j)
+    writer.save()
+atexit.register(exit_handler)
 
 #se checkea la version de chrome y si es necesario descarga el driver para selenium
 
@@ -72,18 +58,21 @@ def dataRead(sheet1):
     ref = output.values[:,8].tolist()
     if "Energy Tot" not in output:
         energies = []
+        matches = []
         inicio = 0
     else:
         if len(output['Energy Tot'].dropna()) == 0:
             energies = []
+            matches = []
             inicio = 0        
         else:
             energies = output['Energy Tot'].dropna().tolist()
+            matches = output['Index Match'].dropna().tolist()
             inicio = len(energies)
         
 
     
-    return output, sequence, structure, energies, ref, inicio
+    return output, sequence, structure, energies, ref, inicio, matches
 
 link = "http://rna.tbi.univie.ac.at//cgi-bin/RNAWebSuite/RNAeval.cgi"
 
@@ -99,7 +88,7 @@ action = ActionChains(driver)
 counter = 1
 for j in listmiRNA:
     #se recorren todos los miRNA (cada worksheet de excel es uno)
-    output, sequence, structure, energies, ref, inicio = dataRead(j)
+    output, sequence, structure, energies, ref, inicio, matches = dataRead(j)
     
 
     print(str(counter) + "- "+ j)  
@@ -159,7 +148,9 @@ for j in listmiRNA:
                     description = driver.find_element_by_xpath('//*[@id="contentmain"]/div[1]/textarea').get_attribute('innerHTML')
                     energies.append(description[description.rfind("(")+1:description.rfind("\n")-1])
                     print(energies)
-                    re.search(ref[i], description,re.IGNORECASE)
+                    index_start = sequence[i].lower().find(ref[i].lower())
+                    idx = str(index_start) + '-' + str(index_start+len(ref[i]))
+                    matches.append(idx)
                    
                     
                 
@@ -174,7 +165,14 @@ for j in listmiRNA:
 
         #se crean distintos dataframes para unir todos los datos al final de la extraccion
         #luego se escriben en el excel y se guarda
-        # df1 = pd.DataFrame()
+        df1 = output
+        df1['Energy Tot'] = energies
+        df1['Index Match'] = matches
+        df1.columns = ['lncRNA','Cadena','CONTRA-FOLD','C-Energía','VIENNA','V-Energía',
+                        'query','ref','chromosome','m_start','m_end','energy','score','conserve', 'cancer related', 'Energy Tot', 'Index Match']
+
+        df1.to_excel(writer, j)
+        writer.save()
         # df2 = pd.DataFrame()
         # df3 = pd.DataFrame()
         # df1['lncRNA'] = output['lncRNA']
