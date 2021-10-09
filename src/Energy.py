@@ -28,16 +28,17 @@ import ExtractmirRNA
 import atexit
 
 def exit_handler():
-    df1 = output
-    df2 = pd.DataFrame()
-    df2['Energy Tot'] = energies
-    df2['Index Match'] = matches
-    df1 = pd.concat([df1,df2], ignore_index=True, axis=1)
-    df1.columns = ['lncRNA','Cadena','CONTRA-FOLD','C-Energía','VIENNA','V-Energía',
-                    'query','ref','chromosome','m_start','m_end','energy','score','conserve', 'cancer related', 'Energy Tot', 'Index Match']
+    if safe == 0:
+        df1 = output
+        df2 = pd.DataFrame()
+        df2['Energy Tot'] = energies
+        df2['Index Match'] = matches
+        df1 = pd.concat([df1,df2], ignore_index=True, axis=1)
+        df1.columns = ['lncRNA','Cadena','CONTRA-FOLD','C-Energía','VIENNA','V-Energía',
+                        'query','ref','chromosome','m_start','m_end','energy','score','conserve', 'cancer related', 'Energy Tot', 'Index Match']
 
-    df1.to_excel(writer, j)
-    writer.save()
+        df1.to_excel(writer, j)
+        writer.save()
 atexit.register(exit_handler)
 
 #se checkea la version de chrome y si es necesario descarga el driver para selenium
@@ -49,7 +50,7 @@ atexit.register(exit_handler)
 # listmiRNA.insert(0,listmiRNA.pop())
 listmiRNA = ExtractmirRNA.getmiRNA()
 
-wb = load_workbook('./database/output.xlsx')
+# wb = load_workbook('./database/output.xlsx')
 
 # keep_sheets = ['hsa-let-7a-5p']
 # for sheetName in wb.sheetnames:
@@ -103,7 +104,8 @@ action = ActionChains(driver)
 
     
 counter = 1
-for j in ['hsa-let-7a-5p']:
+for j in listmiRNA:
+    safe = 0
     #se recorren todos los miRNA (cada worksheet de excel es uno)
     output, sequence, structure, energies, ref, inicio, matches = dataRead(j)
     
@@ -130,7 +132,7 @@ for j in ['hsa-let-7a-5p']:
         options['strings_to_urls'] = False
         #pylint: disable=abstract-class-instantiated
         writer = pd.ExcelWriter('./database/output.xlsx', mode='a', engine='openpyxl', if_sheet_exists='replace')
-        for i in range(inicio, inicio+1): 
+        for i in range(inicio, len(sequence)): 
 
             #se accede al sitio web con selenium y se sigue el workflow necesario
             #en la pagina
@@ -201,26 +203,6 @@ for j in ['hsa-let-7a-5p']:
         print('Writing to Excel file...')
         df1.to_excel(writer, j)
         writer.save()
-        # df2 = pd.DataFrame()
-        # df3 = pd.DataFrame()
-        # df1['lncRNA'] = output['lncRNA']
-        # df1['Cadenas'] = cadenas
-        # df2['CONTRA-FOLD'] = linearfoldC
-        # df2['C-Enegía'] = energia
-        # df2['VIENNA'] = linearfoldV
-        # df2['V-Energía'] = energiaV
-        # df3['query'] = output['query']
-        # df3['ref'] = output['ref']
-        # df3['chromosome'] = output['chromosome']
-        # df3['m_start'] = output['m_start']
-        # df3['m_end'] = output['m_end']
-        # df3['energy'] = output['energy']
-        # df3['score'] = output['score']
-        # df3['conserve'] = output['conserve']
-        # df1 = pd.concat([df1,df2,df3], ignore_index=True, axis=1)
-        # df1.columns = ['lncRNA','Cadena','CONTRA-FOLD','C-Energía','VIENNA','V-Energía',
-        #                 'query','ref','chromosome','m_start','m_end','energy','score','conserve']
-        # df1.to_excel(writer, j)
-        # writer.save()
+    safe = 1
 
 print('Done!')
