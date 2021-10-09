@@ -30,6 +30,11 @@ import atexit
 def exit_handler():
     if safe == 0:
         df1 = output
+        try:
+            del df1['Energy Tot']
+            del df1['Index Match']
+        except:
+            print('Not necessary to delete columns in dataframe...')
         df2 = pd.DataFrame()
         df2['Energy Tot'] = energies
         df2['Index Match'] = matches
@@ -37,8 +42,10 @@ def exit_handler():
         df1.columns = ['lncRNA','Cadena','CONTRA-FOLD','C-Energía','VIENNA','V-Energía',
                         'query','ref','chromosome','m_start','m_end','energy','score','conserve', 'cancer related', 'Energy Tot', 'Index Match']
 
+        print('Writing to Excel file...')
         df1.to_excel(writer, j)
         writer.save()
+        print('Done! Exited the program and saved unexpectedly.')
 atexit.register(exit_handler)
 
 #se checkea la version de chrome y si es necesario descarga el driver para selenium
@@ -170,8 +177,9 @@ for j in listmiRNA:
                     # print(energies)
                     # print(sequence[i])
                     # print(ref[i])
-                    index_start = sequence[i].lower().find(remove_space(ref[i]).lower())
-                    idx = str(index_start) + '-' + str(index_start+len(remove_space(ref[i])))
+                    to_find = remove_space(ref[i]).lower().replace('-','')
+                    index_start = sequence[i].lower().find(to_find)
+                    idx = str(index_start) + '-' + str(index_start+len(to_find))
                     matches.append(idx)
                    
                     
@@ -181,7 +189,8 @@ for j in listmiRNA:
             except:
                 print('Fallo en cargar datos.')
                 # linearfoldC.append('ERROR')
-                # energia.append('ERROR')
+                energies.append('ERROR')
+                matches.append('ERROR')
                 # linearfoldV.append('ERROR')
                 # energiaV.append('ERROR')
 
