@@ -29,8 +29,10 @@ import atexit
 
 def exit_handler():
     df1 = output
-    df1['Energy Tot'] = energies
-    df1['Index Match'] = matches
+    df2 = pd.DataFrame()
+    df2['Energy Tot'] = energies
+    df2['Index Match'] = matches
+    df1 = pd.concat([df1,df2], ignore_index=True, axis=1)
     df1.columns = ['lncRNA','Cadena','CONTRA-FOLD','C-Energía','VIENNA','V-Energía',
                     'query','ref','chromosome','m_start','m_end','energy','score','conserve', 'cancer related', 'Energy Tot', 'Index Match']
 
@@ -47,15 +49,30 @@ atexit.register(exit_handler)
 # listmiRNA.insert(0,listmiRNA.pop())
 listmiRNA = ExtractmirRNA.getmiRNA()
 
+wb = load_workbook('./database/output.xlsx')
+
+# keep_sheets = ['hsa-let-7a-5p']
+# for sheetName in wb.sheetnames:
+#     if sheetName not in keep_sheets:
+#         # del wb[sheetName]
+#         try:
+#             wb.remove(wb[sheetName])
+#             print('DELETED' + sheetName)
+#         except:
+#             print('could not delete ' + sheetName)
+# wb.save('./database/output.xlsx')
+
+def remove_space(string):
+    return "".join(string.rstrip().lstrip())
 
 def dataRead(sheet1):
     #se leen los archivos excel para extraer los datos necesarios.
     #se necesitan: las cadenas para buscar en linearfold, los demas datos ya extraidos
     #de linearfold para continuar con la extraccion
-    output = pd.read_excel('./database/output.xlsx', sheet1, engine='openpyxl')
-    sequence = output.values[:,2].tolist()
-    structure = output.values[:,3].tolist()
-    ref = output.values[:,8].tolist()
+    output = pd.read_excel('./database/output.xlsx', sheet1, index_col=0, engine='openpyxl')
+    sequence = output.values[:,1].tolist()
+    structure = output.values[:,2].tolist()
+    ref = output.values[:,7].tolist()
     if "Energy Tot" not in output:
         energies = []
         matches = []
@@ -80,13 +97,13 @@ link = "http://rna.tbi.univie.ac.at//cgi-bin/RNAWebSuite/RNAeval.cgi"
 #se crea instancia de selenium
 caps = DesiredCapabilities().CHROME
 caps["pageLoadStrategy"] = "eager"  #  para que no espere a que se cargue la pagina
-driver = webdriver.Chrome(executable_path=r'./chromedriver/chromedriver.exe',  desired_capabilities=caps)
+driver = webdriver.Chrome(executable_path=r'/usr/local/bin/chromedriver',  desired_capabilities=caps)
 action = ActionChains(driver)
 
 
     
 counter = 1
-for j in listmiRNA:
+for j in ['hsa-let-7a-5p']:
     #se recorren todos los miRNA (cada worksheet de excel es uno)
     output, sequence, structure, energies, ref, inicio, matches = dataRead(j)
     
@@ -102,18 +119,18 @@ for j in listmiRNA:
     
         #se borran los worksheets en los que se esta trabajando
         #para luego crear un duplicado y evitar que hayan dos iguales
-        if inicio < len(sequence) and inicio > 0:
-            wb = load_workbook('./database/output.xlsx') 
-            wb.remove(wb[j])
-            wb.save('./database/output.xlsx')
+        # if inicio < len(sequence):
+        #     wb = load_workbook('./database/output.xlsx') 
+        #     wb.remove(wb[j])
+        #     wb.save('./database/output.xlsx')
     
         #se crea instancia de ExcelWriter para leer el excel 
         options = {}
         options['strings_to_formulas'] = False
         options['strings_to_urls'] = False
         #pylint: disable=abstract-class-instantiated
-        writer = pd.ExcelWriter('./database/output.xlsx', mode='a', engine='openpyxl')
-        for i in range(inicio, len(sequence)): 
+        writer = pd.ExcelWriter('./database/output.xlsx', mode='a', engine='openpyxl', if_sheet_exists='replace')
+        for i in range(inicio, inicio+1): 
 
             #se accede al sitio web con selenium y se sigue el workflow necesario
             #en la pagina
@@ -148,14 +165,16 @@ for j in listmiRNA:
                     )
                     description = driver.find_element_by_xpath('//*[@id="contentmain"]/div[1]/textarea').get_attribute('innerHTML')
                     energies.append(description[description.rfind("(")+1:description.rfind("\n")-1])
-                    print(energies)
-                    index_start = sequence[i].lower().find(ref[i].lower())
-                    idx = str(index_start) + '-' + str(index_start+len(ref[i]))
+                    # print(energies)
+                    # print(sequence[i])
+                    # print(ref[i])
+                    index_start = sequence[i].lower().find(remove_space(ref[i]).lower())
+                    idx = str(index_start) + '-' + str(index_start+len(remove_space(ref[i])))
                     matches.append(idx)
                    
                     
                 
-                    # print('Copiando secuencia {}'.format(i))
+                    print('Copiando secuencia {}'.format(i))
                     
             except:
                 print('Fallo en cargar datos.')
@@ -167,11 +186,19 @@ for j in listmiRNA:
         #se crean distintos dataframes para unir todos los datos al final de la extraccion
         #luego se escriben en el excel y se guarda
         df1 = output
-        df1['Energy Tot'] = energies
-        df1['Index Match'] = matches
+        try:
+            del df1['Energy Tot']
+            del df1['Index Match']
+        except:
+            print('Not necessary to delete columns in dataframe...')
+        df2 = pd.DataFrame()
+        df2['Energy Tot'] = energies
+        df2['Index Match'] = matches
+        df1 = pd.concat([df1,df2], ignore_index=True, axis=1)
         df1.columns = ['lncRNA','Cadena','CONTRA-FOLD','C-Energía','VIENNA','V-Energía',
                         'query','ref','chromosome','m_start','m_end','energy','score','conserve', 'cancer related', 'Energy Tot', 'Index Match']
 
+        print('Writing to Excel file...')
         df1.to_excel(writer, j)
         writer.save()
         # df2 = pd.DataFrame()
@@ -195,3 +222,5 @@ for j in listmiRNA:
         #                 'query','ref','chromosome','m_start','m_end','energy','score','conserve']
         # df1.to_excel(writer, j)
         # writer.save()
+
+print('Done!')
