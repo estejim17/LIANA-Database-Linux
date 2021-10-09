@@ -102,9 +102,10 @@ for j in listmiRNA:
     
         #se borran los worksheets en los que se esta trabajando
         #para luego crear un duplicado y evitar que hayan dos iguales
-        wb = load_workbook('./database/output.xlsx') 
-        wb.remove(wb[j])
-        wb.save('./database/output.xlsx')
+        if inicio < len(sequence) and inicio > 0:
+            wb = load_workbook('./database/output.xlsx') 
+            wb.remove(wb[j])
+            wb.save('./database/output.xlsx')
     
         #se crea instancia de ExcelWriter para leer el excel 
         options = {}
